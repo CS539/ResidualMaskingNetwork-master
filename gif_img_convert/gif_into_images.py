@@ -1,8 +1,21 @@
 # Reading an animated GIF file using Python Image Processing Library - Pillow
 from PIL import Image
 from PIL import GifImagePlugin
+import csv
 
-imageObject = Image.open("../xmas.gif")
+gif_list = []
+
+# this will add gif directories into gif_list list
+with open('../GIF_input/faces.csv', 'r') as f:
+    rows = csv.reader(f)
+    for row in rows:
+        for i in row:
+            print(i + '\n')
+            gif_list.extend('../GIF_input/' + i)
+
+print(gif_list[1])
+
+imageObject = Image.open(gif_list[0])
 print(imageObject.is_animated)
 print(imageObject.n_frames)
 
