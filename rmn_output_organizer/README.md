@@ -3,3 +3,6 @@
 > image with fame and most relevent emtion probability
 ### What the codes in this folder will do
 > make a new foler for one gif, that contains result images from executing the rmn model & a csv file that contains rmn detection results.
+## 
+## Google Colab - idea note for implementing
+https://colab.research.google.com/drive/13wbY8fLzk6aUfBgw20zQJnXV76j9qDY0?usp=sharing 
