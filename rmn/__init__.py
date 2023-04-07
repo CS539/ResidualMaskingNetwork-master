@@ -348,3 +348,28 @@ class RMN:
                 }
             )
         return results
+    
+    # Function to detect emotions for one gif and store the results 
+    @torch.no_grad()
+    def detect_emotions_and_store_in_list(self, csv_path , gif_name):
+        import cv2
+        import csv
+        from collections import deque
+
+        i = 0
+        output_lists = deque()
+
+        # Read the csv file
+        try:
+            rows = csv.reader("{csv_path}{gif_name}.csv")  
+        except:
+            print(f'The file {csv_path}{gif_name}.csv does not exist!')
+
+        # loop for converting each image using the name of the image file
+        # And then store the result of detecting emotion for each frame to the deqeue list
+        for row in rows:
+            for frame_name in row:
+                frame = cv2.imread(frame_name)
+                output_lists.append(self.detect_emotion_for_single_frame(frame))
+        
+        return output_lists
