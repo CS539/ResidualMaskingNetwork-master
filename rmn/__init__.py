@@ -349,27 +349,39 @@ class RMN:
             )
         return results
     
+    
     # Function to detect emotions for one gif and store the results 
     @torch.no_grad()
-    def detect_emotions_and_store_in_list(self, csv_path , gif_name):
+    def detect_emotions_and_store_in_list(self, input_path, gif_name):
         import cv2
-        import csv
         from collections import deque
+        from PIL import Image
+        import os
 
         i = 0
         output_lists = deque()
-
-        # Read the csv file
-        try:
-            rows = csv.reader("{csv_path}{gif_name}.csv")  
-        except:
-            print(f'The file {csv_path}{gif_name}.csv does not exist!')
-
+        folder_path = "./GIF_output/rmn_first_results/"
+            
+        # Check if the folder to store this function's results exists
+        # If not, make new one
+        if not os.path.exists(f'{folder_path}{gif_name}'):
+            os.makedirs(f'{folder_path}{gif_name}')    
+            
+        frame_name = "{input_path}{gif_name}_{i}.jpg"
+        frame = cv2.imread(frame_name)
         # loop for converting each image using the name of the image file
         # And then store the result of detecting emotion for each frame to the deqeue list
-        for row in rows:
-            for frame_name in row:
+        # Also, draw results on that image (frame) and save that image on the result folder
+        # for row in rows:
+        #     for frame_name in row:
+        while frame is not None:
+                frame_detection = self.detect_emotion_for_single_frame(frame)
+                output_lists.append(frame_detection)
+                frame = self.draw(frame, frame_detection)
+                frame.save(f'{folder_path}{gif_name}/{gif_name}_{i}_rmnResult.jpg')
+                i = i + 1
+                frame_name = "{input_path}{gif_name}_{i}.jpg"
                 frame = cv2.imread(frame_name)
-                output_lists.append(self.detect_emotion_for_single_frame(frame))
-        
-        return output_lists
+                
+        # Note by Janice : We can modify this part so that the list also can be stored in the folder
+        return output_lists     
