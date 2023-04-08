@@ -390,5 +390,6 @@ class RMN:
                 cv2.imwrite(f'{output_path}/{gif_name}_{i}_rmnResult.jpg', frame)
                 i = i + 1
                 
-        # Note by Janice : We can modify this part so that the list also can be stored in the folder
+        # Note by Janice : This function stores images in random order (maybe due to for loop condition.)
+        #                   will going to fix it
         return output_lists     
