@@ -368,15 +368,14 @@ class RMN:
         
         # Check if the folder to store this function's results exists
         # If not, make new one
-        if not os.path.exists(f'{output_path}{gif_name}'):
-            os.makedirs(f'{output_path}{gif_name}')    
+        if not os.path.exists(f'{output_path}'):
+            os.makedirs(f'{output_path}')    
 
         # loop for converting each image using the name of the image file
         # And then store the result of detecting emotion for each frame to the deqeue list
         # Also, draw results on that image (frame) and save that image on the result folder
-        # for row in rows:
-        #     for frame_name in row:
         for frame_name in os.listdir(input_path):
+            frame_name = f'{gif_name}_{i}.jpg'
             frame = cv2.imread(os.path.join(input_path, f'{frame_name}'))
             
             if frame is not None:                
@@ -390,6 +389,4 @@ class RMN:
                 cv2.imwrite(f'{output_path}/{gif_name}_{i}_rmnResult.jpg', frame)
                 i = i + 1
                 
-        # Note by Janice : This function stores images in random order (maybe due to for loop condition.)
-        #                   will going to fix it
         return output_lists     
