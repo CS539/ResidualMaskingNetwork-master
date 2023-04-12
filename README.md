@@ -14,6 +14,26 @@ A [PyTorch](http://pytorch.org/) implementation of my thesis with the same name.
 <img width=700 src= "https://user-images.githubusercontent.com/24642166/104806861-14b29880-580d-11eb-814b-a074847e35fe.png"/>
 </p>
 
+# Note From Janice: 
+I figured out how to run out model on local machine.
+1. Clone this Github Repo on your local machine
+2. Go to the folder that you just cloned (must be inside of the folder)
+3. Type the command bellow on terminal (worked when I used Git Bash or Linux)
+```bash
+pip install -e .
+```
+4. Make your own python file which includes codes bellow
+```python
+from rmn import RMN
+m = RMN()
+```
+5. Run the file you just made (worked well using the code bellow on Git Bash or Linux)
+```bash
+python {file name you made}
+```
+I debugged my function by following these steps :)
+
+
 # Inference:
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ZEbJ6rJuGZ6UzmOFE1XCzSgacTUJiN-H?usp=sharing)

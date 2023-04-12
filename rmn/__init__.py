@@ -348,3 +348,45 @@ class RMN:
                 }
             )
         return results
+    
+    
+    # Function to detect emotions for one gif and store the result images in new folder
+    # It will return the output_lists which contains rmn results as follows:
+    #       'xmin': 125, 'ymin': 143, 'xmax': 562, 'ymax': 580, 'emo_label': 'happy',
+    #       'emo_proba': 0.9438448548316956, ... 
+    @torch.no_grad()
+    def detect_emotions_and_store_in_list(self, input_path, gif_name):
+        import cv2
+        from collections import deque
+        from PIL import Image
+        import os
+
+        i = 0
+        output_lists = deque()
+        input_path = f'{input_path}{gif_name}/'
+        output_path = f'./GIF_output/rmn_first_results/{gif_name}/'
+        
+        # Check if the folder to store this function's results exists
+        # If not, make new one
+        if not os.path.exists(f'{output_path}'):
+            os.makedirs(f'{output_path}')    
+
+        # loop for converting each image using the name of the image file
+        # And then store the result of detecting emotion for each frame to the deqeue list
+        # Also, draw results on that image (frame) and save that image on the result folder
+        for frame_name in os.listdir(input_path):
+            frame_name = f'{gif_name}_{i}.jpg'
+            frame = cv2.imread(os.path.join(input_path, f'{frame_name}'))
+            
+            if frame is not None:                
+                frame_detection = self.detect_emotion_for_single_frame(frame)
+                output_lists.append(frame_detection)
+                frame = self.draw(frame, frame_detection)
+                
+                # store the result frame in new folder
+                result_frame = Image.open(f'{input_path}{gif_name}_{i}.jpg').copy()
+                result_frame.save(f'{output_path}/{gif_name}_{i}_rmnResult.jpg')
+                cv2.imwrite(f'{output_path}/{gif_name}_{i}_rmnResult.jpg', frame)
+                i = i + 1
+                
+        return output_lists     
