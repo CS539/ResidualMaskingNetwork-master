@@ -1,68 +1,40 @@
 import os
 from PIL import Image
-
-# (255, 255, 255) = white
-
 import imageio
 
-def jpgs_to_gif(input_path: str, gif_name: str, save_path: str):
-    images = []
-    for filename in os.listdir(input_path):
-        images.append(imageio.imread(filename))
+# input parameters:
+#   input_path: folder path which contains folders of all frames for each git
+#   gif_name:   specific gif name that user want to convert
+def make_gif(input_path:str, gif_name: str):
+    # Handle the exception of not given inputs
+    if(input_path is "" or gif_name is ""):
+        print("\nError: Given inputs are empty!\n")
+        return 
     
-    if not os.path.exists(f'{save_path}{gif_name}'):
-        os.makedirs(f'{save_path}{gif_name}')
-
-    imageio.mimsave(f'{save_path}{gif_name}/{gif_name}.gif', images)
-    print(f'successfully convert the file: {gif_name}.gif')
-
-
-# def gif_to_jpgs(file_path: str, gif_name: str, save_path: str, trans_color: tuple = (255, 255, 255)):
-
-#     file_path_with_name = file_path + gif_name
-#     # Check filename extension
-#     if not(file_path_with_name[-3:] == 'gif' or file_path_with_name[-3:] == 'GIF'):
-#         print(f'it is not gif file, {file_path_with_name[-3:]}')
-#         return
-
-#     # Delete filename extension '.gif'
-#     # file_name contains with file path
-#     # exact_file_name (which is below the code) will not store the file path
-#     file_name = file_path_with_name[:-4]
-#     with Image.open(file_path_with_name) as im:
-
-#         # check frames
-#         print(f'frame count: {im.n_frames}')
-#         for i in range(im.n_frames):
-
-#             # move to image[i]
-#             im.seek(i)
-
-#             # convert to RGBA
-#             image = im.convert("RGBA")
-#             new_data = []
-
-#             for item in image.getdata():
-#                 if item[3] == 0:
-#                     new_data.append(trans_color)
-#                 else:
-#                     new_data.append(tuple(item[:3]))
-
-#             # Create a new RGB blank image
-#             new_image = Image.new("RGB", im.size)
-
-#             # Add new_data into new_image
-#             new_image.putdata(new_data)
-
-#             # This is only the gif name
-#             exact_file_name = file_name.split('/')[-1]
-
-#             # check if the directory exists
-#             # If not, create a new one
-#             if not os.path.exists(f'{save_path}{exact_file_name}'):
-#                 os.makedirs(f'{save_path}{exact_file_name}')
-
-#             # save
-#             new_image.save(f'{save_path}{exact_file_name}/{exact_file_name}_{i}.jpg')
-            
-#         print(f'successfully convert the file: {exact_file_name}')
+    input_path = f'{input_path}{gif_name}/'
+    save_path = f'./GIF_output/rmn_final_results/{gif_name}/'
+    
+    # check if the input folder exist
+    if not os.path.exists(f'{input_path}'):
+        print("Error: input folder doesn't exist!\n")
+        return
+    
+    # check if the folder for saving outputs exist
+    # if not, then make a new one
+    if not os.path.exists(f'{save_path}'):
+        os.makedirs(f'{save_path}')
+    
+    i = 0
+    frames = []
+    
+    # Get each frame images from the input_path and store them in the list: frames
+    for frame_name in os.listdir(input_path):
+        frame_name = f'{gif_name}_{i}_rmnResult.jpg'
+        frame = imageio.v2.imread(os.path.join(input_path, f'{frame_name}'))
+        if frame is not None:           
+            frames.append(frame)
+        i = i+1
+    
+    # combine all images in 'frames' list and convert it to gif
+    imageio.mimsave(f'{save_path}{gif_name}_result.gif', frames) 
+    print(f"{gif_name}.gif has been successfuly made")
