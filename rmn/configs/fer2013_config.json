@@ -1,5 +1,5 @@
 {
-	"data_path": "saved/data/fer2013",
+	"data_path": "../../539_training_dataset_1/",
 	"image_size": 224,
 	"in_channels": 3,
 	"num_classes": 7,
