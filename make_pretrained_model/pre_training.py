@@ -69,7 +69,7 @@ batch_size = 32
 num_epochs = 10
 
 # Define the dataset and data loader
-dataset = MyDataset('../data.csv', transform=transform)
+dataset = MyDataset('../Keggle_raw_dataset/labels.csv', transform=transform)
 data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 # Create an instance of the CNN
