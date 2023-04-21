@@ -23,7 +23,9 @@ def show(img, name="disp", width=1000):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-
+##################
+# Need to change #
+##################
 checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/Z_resmasking_dropout1_rot30_2019Nov30_13.32"
 local_checkpoint_path = "pretrained_ckpt"
 
@@ -32,7 +34,9 @@ local_prototxt_path = "deploy.prototxt.txt"
 
 ssd_checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/res10_300x300_ssd_iter_140000.caffemodel"
 local_ssd_checkpoint_path = "res10_300x300_ssd_iter_140000.caffemodel"
-
+##################
+##################
+##################
 
 def download_checkpoint(remote_url, local_path):
     import requests
