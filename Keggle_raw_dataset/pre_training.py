@@ -7,9 +7,15 @@ from PIL import Image
 import pandas as pd
 import os
 
+
+EMO_DICT = {"neutral": 0, "anger": 1, "disgust": 2, "fear": 3,
+            "happy": 4, "sad": 5, "surprise": 6, "contempt": 7}
+
 # Define a CNN
+
+
 class MyCNN(nn.Module):
-    def __init__(self, num_classes=7):
+    def __init__(self, num_classes=8):
         super(MyCNN, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(3, 32, kernel_size=3, padding=1),
@@ -40,6 +46,8 @@ class MyCNN(nn.Module):
         return x
 
 # Define a custom dataset
+
+
 class MyDataset(Dataset):
     def __init__(self, csv_file, transform=None):
         self.data = pd.read_csv(csv_file)
@@ -56,6 +64,7 @@ class MyDataset(Dataset):
             img = self.transform(img)
         return img, label
 
+
 # Define a data transformer
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -69,7 +78,7 @@ batch_size = 32
 num_epochs = 10
 
 # Define the dataset and data loader
-dataset = MyDataset('../Keggle_raw_dataset/labels.csv', transform=transform)
+dataset = MyDataset('./labels.csv', transform=transform)
 data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 # Create an instance of the CNN
@@ -86,7 +95,11 @@ for epoch in range(num_epochs):
         inputs, labels = data
         optimizer.zero_grad()
         outputs = model(inputs)
-        loss = criterion(outputs, labels)
+        emo_list = []
+        for j in labels:
+            emo_list.append(EMO_DICT[j])
+        target = torch.LongTensor(emo_list)
+        loss = criterion(outputs, target)
         loss.backward()
         optimizer.step()
 
@@ -95,4 +108,4 @@ for epoch in range(num_epochs):
     print(f'Epoch {epoch+1}, Loss: {running_loss/len(data_loader)}')
 
 # Save the model as a pre-trained model
-torch.save(model.state_dict(), './my_pretrained_model')
+torch.save(model.state_dict(), '../pretrained_ckpt')
