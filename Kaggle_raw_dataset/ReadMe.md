@@ -1,5 +1,5 @@
 # How to run the pre_training.py
-## 1. Get to the keggle dataset folder which is ResidualMaskingNetwork-master/Keggle_raw_dataset
+## 1. Get to the Kaggle dataset folder which is ResidualMaskingNetwork-master/Kaggle_raw_dataset
 ## 2. Run the code
 `python3 ./pre_training.py`
 or
