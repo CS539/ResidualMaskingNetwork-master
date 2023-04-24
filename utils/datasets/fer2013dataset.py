@@ -28,6 +28,7 @@ class FER2013(Dataset):
 
         self._image_size = (configs["image_size"], configs["image_size"])
 
+        print(f'print print print {os.path.join(configs["data_path"], "{}.csv".format(stage))}')
         self._data = pd.read_csv(
             os.path.join(configs["data_path"], "{}.csv".format(stage))
         )

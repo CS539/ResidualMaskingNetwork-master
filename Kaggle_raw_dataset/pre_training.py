@@ -75,7 +75,7 @@ transform = transforms.Compose([
 # Define the hyperparameters
 learning_rate = 0.001
 batch_size = 32
-num_epochs = 10
+num_epochs = 20
 
 # Define the dataset and data loader
 dataset = MyDataset('./labels.csv', transform=transform)
