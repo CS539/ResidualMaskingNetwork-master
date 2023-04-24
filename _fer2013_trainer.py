@@ -18,7 +18,7 @@ from utils.radam import RAdam
 # from torch.optim import SGD as RAdam
 
 
-EMO_DICT = {0: "ne", 1: "an", 2: "di", 3: "fe", 4: "ha", 5: "sa", 6: "su"}
+EMO_DICT = {0: "ne", 1: "an", 2: "di", 3: "fe", 4: "ha", 5: "sa", 6: "su", 7: "co"}
 
 
 class Trainer(object):

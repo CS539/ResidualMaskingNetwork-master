@@ -1,3 +1,4 @@
+from utils.augmenters.augment import seg
 import os
 import sys
 
@@ -7,16 +8,15 @@ from torch.utils.data import Dataset
 from torchvision.transforms import transforms
 
 sys.path.append("/home/z/research/tee/")
-from utils.augmenters.augment import seg
 
 EMOTION_DICT = {
     0: "Neutral",
-    1: "Happiness",
-    2: "Sadness",
-    3: "Surprise",
-    4: "Fear",
-    5: "Disgust",
-    6: "Anger",
+    1: "Anger",
+    2: "Disgust",
+    3: "Fear",
+    4: "Happy",
+    5: "Sad",
+    6: "Surprise",
     7: "Contempt",
     8: "None",
     9: "Uncertain",

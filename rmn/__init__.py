@@ -23,6 +23,7 @@ def show(img, name="disp", width=1000):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+
 ##################
 # Need to change #
 ##################
@@ -37,6 +38,7 @@ local_ssd_checkpoint_path = "res10_300x300_ssd_iter_140000.caffemodel"
 ##################
 ##################
 ##################
+
 
 def download_checkpoint(remote_url, local_path):
     import requests
@@ -102,13 +104,14 @@ transform = transforms.Compose(
 )
 
 FER_2013_EMO_DICT = {
-    0: "angry",
-    1: "disgust",
-    2: "fear",
-    3: "happy",
-    4: "sad",
-    5: "surprise",
-    6: "neutral",
+    0: "neutral",
+    1: "anger",
+    2: "disgust",
+    3: "fear",
+    4: "happy",
+    5: "sad",
+    6: "surprise",
+    7: "contempt"
 }
 
 is_cuda = torch.cuda.is_available()
@@ -352,12 +355,12 @@ class RMN:
                 }
             )
         return results
-    
-    
+
     # Function to detect emotions for one gif and store the result images in new folder
     # It will return the output_lists which contains rmn results as follows:
     #       'xmin': 125, 'ymin': 143, 'xmax': 562, 'ymax': 580, 'emo_label': 'happy',
-    #       'emo_proba': 0.9438448548316956, ... 
+    #       'emo_proba': 0.9438448548316956, ...
+
     @torch.no_grad()
     def detect_emotions_and_store_in_list(self, input_path, gif_name):
         import cv2
@@ -369,11 +372,11 @@ class RMN:
         output_lists = deque()
         input_path = f'{input_path}{gif_name}/'
         output_path = f'./GIF_output/rmn_first_results/{gif_name}/'
-        
+
         # Check if the folder to store this function's results exists
         # If not, make new one
         if not os.path.exists(f'{output_path}'):
-            os.makedirs(f'{output_path}')    
+            os.makedirs(f'{output_path}')
 
         # loop for converting each image using the name of the image file
         # And then store the result of detecting emotion for each frame to the deqeue list
@@ -381,16 +384,16 @@ class RMN:
         for frame_name in os.listdir(input_path):
             frame_name = f'{gif_name}_{i}.jpg'
             frame = cv2.imread(os.path.join(input_path, f'{frame_name}'))
-            
-            if frame is not None:                
+
+            if frame is not None:
                 frame_detection = self.detect_emotion_for_single_frame(frame)
                 output_lists.append(frame_detection)
                 frame = self.draw(frame, frame_detection)
-                
+
                 # store the result frame in new folder
                 result_frame = Image.open(f'{input_path}{gif_name}_{i}.jpg').copy()
                 result_frame.save(f'{output_path}/{gif_name}_{i}_rmnResult.jpg')
                 cv2.imwrite(f'{output_path}/{gif_name}_{i}_rmnResult.jpg', frame)
                 i = i + 1
-                
-        return output_lists     
+
+        return output_lists
