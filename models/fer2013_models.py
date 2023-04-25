@@ -78,12 +78,15 @@ class BasicBlock(nn.Module):
 class BaseNet(nn.Module):
     """basenet for fer2013"""
 
-    def __init__(self, in_channels=1, num_classes=7):
+    def __init__(self, in_channels=3, num_classes=8):
         super(BaseNet, self).__init__()
         nn.BatchNorm2d
 
+        self.in_channels = in_channels
+        self.num_classes = num_classes
+
         self.conv1 = nn.Conv2d(
-            in_channels=1,
+            in_channels=self.in_channels,
             out_channels=64,
             kernel_size=7,
             stride=1,
@@ -116,7 +119,7 @@ class BaseNet(nn.Module):
         return x
 
 
-def basenet(in_channels=1, num_classes=7):
+def basenet(in_channels=1, num_classes=8):
     return BaseNet(in_channels, num_classes)
 
 

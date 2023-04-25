@@ -22,6 +22,7 @@ EMOTION_DICT = {
 
 class FER2013(Dataset):
     def __init__(self, stage, configs, tta=False, tta_size=48):
+    # def __init__(self, configs, tta=False, tta_size=48):
         self._stage = stage
         self._configs = configs
         self._tta = tta
@@ -29,9 +30,10 @@ class FER2013(Dataset):
 
         self._image_size = (configs["image_size"], configs["image_size"])
 
-        print(f'print print print {os.path.join(configs["data_path"], "{}.csv".format(stage))}')
+        # print(f'print print print {os.path.join(configs["data_path"], "{}.csv".format(stage))}')
         self._data = pd.read_csv(
-            os.path.join(configs["data_path"], "{}.csv".format(stage))
+            # os.path.join(configs["data_path"], "{}.csv".format(stage))
+            configs['csv_path']
         )
 
         self._pixels = self._data["pixels"].tolist()
@@ -59,12 +61,14 @@ class FER2013(Dataset):
         image = cv2.resize(image, self._image_size)
         image = np.dstack([image] * 3)
 
-        if self._stage == "train":
+        # if self._stage == "train":
+        if self._stage == 'test':
             image = seg(image=image)
 
-        if self._stage == "test" and self._tta == True:
+        # if self._stage == "test" and self._tta == True:
+        if self._stage == "train" and self._tta == True:
             images = [seg(image=image) for i in range(self._tta_size)]
-            # images = [image for i in range(self._tta_size)]
+            images = [image for i in range(self._tta_size)]
             images = list(map(self._transform, images))
             target = self._emotions.iloc[idx].idxmax()
             return images, target
@@ -82,17 +86,17 @@ if __name__ == "__main__":
     data = FER2013(
         "train",
         {
-            "data_path": "/home/z/research/tee/saved/data/fer2013/",
-            "image_size": 224,
+            "data_path": "../../Kaggle_raw_dataset/",
+            "image_size": 96,
             "in_channels": 3,
         },
     )
     import cv2
 
-    targets = []
+    # targets = []
 
-    for i in range(len(data)):
-        image, target = data[i]
-        cv2.imwrite("debug/{}.png".format(i), image)
-        if i == 200:
-            break
+    # for i in range(len(data)):
+    #     image, target = data[i]
+    #     cv2.imwrite("debug/{}.png".format(i), image)
+    #     if i == 200:
+    #         break
