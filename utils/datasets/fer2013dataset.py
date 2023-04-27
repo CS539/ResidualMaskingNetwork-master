@@ -51,7 +51,7 @@ class FER2013(Dataset):
     def __getitem__(self, idx):
         pixels = self._pixels[idx]
         pixels = list(map(int, pixels.split(" ")))
-        image = np.asarray(pixels).reshape(48, 48)
+        image = np.asarray(pixels).reshape(96, 96)
         image = image.astype(np.uint8)
 
         image = cv2.resize(image, self._image_size)
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     data = FER2013(
         "train",
         {
-            "data_path": "/home/z/research/tee/saved/data/fer2013/",
+            "data_path": "../../539_training_dataset_1/",
             "image_size": 224,
             "in_channels": 3,
         },

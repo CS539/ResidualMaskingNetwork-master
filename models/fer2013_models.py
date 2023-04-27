@@ -124,4 +124,4 @@ if __name__ == "__main__":
     net = BaseNet().cuda()
     from torchsummary import summary
 
-    print(summary(net, input_size=(1, 48, 48)))
+    print(summary(net, input_size=(1, 96, 96)))

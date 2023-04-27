@@ -24,6 +24,9 @@ def show(img, name="disp", width=1000):
     cv2.destroyAllWindows()
 
 
+##########################
+##This should be changed##
+##########################
 checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/Z_resmasking_dropout1_rot30_2019Nov30_13.32"
 local_checkpoint_path = "pretrained_ckpt"
 
@@ -32,7 +35,8 @@ local_prototxt_path = "deploy.prototxt.txt"
 
 ssd_checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/res10_300x300_ssd_iter_140000.caffemodel"
 local_ssd_checkpoint_path = "res10_300x300_ssd_iter_140000.caffemodel"
-
+##########################
+##########################
 
 def download_checkpoint(remote_url, local_path):
     import requests
@@ -319,6 +323,19 @@ class RMN:
         results = []
         face_results = self.detect_faces(frame)
         print(f"num faces: {len(face_results)}")
+        if len(face_results) == 0:
+            results.append(
+                {
+                    "xmin": 0,
+                    "ymin": 0,
+                    "xmax": 0,
+                    "ymax": 0,
+                    "emo_label": 0,
+                    "emo_proba": 0,
+                    "proba_list": 0,
+                }
+            )
+            return results
 
         for face in face_results:
             xmin = face["xmin"]
@@ -363,8 +380,10 @@ class RMN:
 
         i = 0
         output_lists = deque()
+        # input_path = f'{input_path}{gif_name}'
+        # output_path = f'./GIF_output/rmn_first_results/{gif_name}'
         input_path = f'{input_path}{gif_name}/'
-        output_path = f'./GIF_output/rmn_first_results/{gif_name}/'
+        output_path = f'./GIF_output/rmn_first_results/{gif_name}'
         
         # Check if the folder to store this function's results exists
         # If not, make new one
@@ -374,19 +393,38 @@ class RMN:
         # loop for converting each image using the name of the image file
         # And then store the result of detecting emotion for each frame to the deqeue list
         # Also, draw results on that image (frame) and save that image on the result folder
+       
         for frame_name in os.listdir(input_path):
+
             frame_name = f'{gif_name}_{i}.jpg'
             frame = cv2.imread(os.path.join(input_path, f'{frame_name}'))
-            
-            if frame is not None:                
+                      
+            if frame is not None: # there is a image                
                 frame_detection = self.detect_emotion_for_single_frame(frame)
-                output_lists.append(frame_detection)
-                frame = self.draw(frame, frame_detection)
-                
+                if len(frame_detection) == 0 :
+                    frame_detection.append(
+                        {
+                            "xmin": 0,
+                            "ymin": 0,
+                            "xmax": 0,
+                            "ymax": 0,
+                            "emo_label": 0,
+                            "emo_proba": 0,
+                            "proba_list": 0,
+                        }
+                    )
+                                 
+                else:
+                    output_lists.append(frame_detection)
+                    frame = self.draw(frame, frame_detection)
+            
                 # store the result frame in new folder
                 result_frame = Image.open(f'{input_path}{gif_name}_{i}.jpg').copy()
                 result_frame.save(f'{output_path}/{gif_name}_{i}_rmnResult.jpg')
                 cv2.imwrite(f'{output_path}/{gif_name}_{i}_rmnResult.jpg', frame)
                 i = i + 1
                 
-        return output_lists     
+        return output_lists 
+    
+
+
