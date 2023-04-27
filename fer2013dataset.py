@@ -78,7 +78,7 @@ if __name__ == "__main__":
     data = FER2013(
         "train",
         {
-            "data_path": "",
+            "data_path": "./Kaggle_raw_dataset",
             "image_size": 96,
             "in_channels": 3,
         },

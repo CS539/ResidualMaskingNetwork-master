@@ -19,7 +19,7 @@ from utils.radam import RAdam
 
 
 EMO_DICT = {0: "ne", 1: "an", 2: "di", 3: "fe",
-            4: "ha", 5: "sa", 6: "su", 7: "co"}
+            4: "ha", 5: "sa", 6: "su"}
 
 
 class Trainer(object):
