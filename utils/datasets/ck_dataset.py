@@ -11,7 +11,14 @@ sys.path.append("/home/z/research/tee")
 from utils.augmenters.augment import seg
 
 """
-0=neutral, 1=anger, 2=contempt, 3=disgust, 4=fear, 5=happy, 6=sadness, 7=surprise
+    0: "neutral",
+    1: "anger",
+    2: "disgust",
+    3: "fear",
+    4: "happy",
+    5: "sad",
+    6: "surprise",
+    7: "contempt"
 """
 
 

@@ -4,7 +4,7 @@
 	"in_channels": 3,
 	"num_classes": 7,
 	"arch": "resnet34",
-	"lr":  0.0001,
+	"lr":  0.002,
 	"weighted_loss": 0,
 	"momentum": 0.9,
 	"weight_decay": 0.001,

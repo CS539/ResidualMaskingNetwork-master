@@ -27,6 +27,7 @@ def show(img, name="disp", width=1000):
 ##########################
 ##This should be changed##
 ##########################
+
 checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/Z_resmasking_dropout1_rot30_2019Nov30_13.32"
 local_checkpoint_path = "pretrained_ckpt"
 
@@ -35,8 +36,10 @@ local_prototxt_path = "deploy.prototxt.txt"
 
 ssd_checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/res10_300x300_ssd_iter_140000.caffemodel"
 local_ssd_checkpoint_path = "res10_300x300_ssd_iter_140000.caffemodel"
+
 ##########################
 ##########################
+
 
 def download_checkpoint(remote_url, local_path):
     import requests
@@ -102,13 +105,14 @@ transform = transforms.Compose(
 )
 
 FER_2013_EMO_DICT = {
-    0: "angry",
-    1: "disgust",
-    2: "fear",
-    3: "happy",
-    4: "sad",
-    5: "surprise",
-    6: "neutral",
+    0: "neutral",
+    1: "anger",
+    2: "disgust",
+    3: "fear",
+    4: "happy",
+    5: "sad",
+    6: "surprise",
+    7: "contempt"
 }
 
 is_cuda = torch.cuda.is_available()
@@ -123,11 +127,11 @@ image_size = (configs["image_size"], configs["image_size"])
 
 
 def get_emo_model():
-    emo_model = resmasking_dropout1(in_channels=3, num_classes=7)
+    emo_model = resmasking_dropout1(in_channels=3, num_classes=8)
     if is_cuda:
         emo_model.cuda(0)
     state = torch.load(local_checkpoint_path, map_location="cpu")
-    emo_model.load_state_dict(state["net"])
+    emo_model.load_state_dict(state)
     emo_model.eval()
     return emo_model
 
@@ -365,12 +369,12 @@ class RMN:
                 }
             )
         return results
-    
-    
+
     # Function to detect emotions for one gif and store the result images in new folder
     # It will return the output_lists which contains rmn results as follows:
     #       'xmin': 125, 'ymin': 143, 'xmax': 562, 'ymax': 580, 'emo_label': 'happy',
-    #       'emo_proba': 0.9438448548316956, ... 
+    #       'emo_proba': 0.9438448548316956, ...
+
     @torch.no_grad()
     def detect_emotions_and_store_in_list(self, input_path, gif_name):
         import cv2
@@ -384,11 +388,11 @@ class RMN:
         # output_path = f'./GIF_output/rmn_first_results/{gif_name}'
         input_path = f'{input_path}{gif_name}/'
         output_path = f'./GIF_output/rmn_first_results/{gif_name}'
-        
+      
         # Check if the folder to store this function's results exists
         # If not, make new one
         if not os.path.exists(f'{output_path}'):
-            os.makedirs(f'{output_path}')    
+            os.makedirs(f'{output_path}')
 
         # loop for converting each image using the name of the image file
         # And then store the result of detecting emotion for each frame to the deqeue list
@@ -417,14 +421,10 @@ class RMN:
                 else:
                     output_lists.append(frame_detection)
                     frame = self.draw(frame, frame_detection)
-            
+
                 # store the result frame in new folder
                 result_frame = Image.open(f'{input_path}{gif_name}_{i}.jpg').copy()
                 result_frame.save(f'{output_path}/{gif_name}_{i}_rmnResult.jpg')
                 cv2.imwrite(f'{output_path}/{gif_name}_{i}_rmnResult.jpg', frame)
-                i = i + 1
-                
+                i = i + 1  
         return output_lists 
-    
-
-

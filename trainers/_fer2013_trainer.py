@@ -18,7 +18,8 @@ from utils.radam import RAdam
 # from torch.optim import SGD as RAdam
 
 
-EMO_DICT = {0: "ne", 1: "an", 2: "di", 3: "fe", 4: "ha", 5: "sa", 6: "su"}
+EMO_DICT = {0: "ne", 1: "an", 2: "di", 3: "fe",
+            4: "ha", 5: "sa", 6: "su", 7: "co"}
 
 
 class Trainer(object):
@@ -55,6 +56,8 @@ class FER2013Trainer(Trainer):
         self._model = model(
             in_channels=configs["in_channels"],
             num_classes=configs["num_classes"],
+            # configs['in_channels'],
+            # configs['num_classes']
         )
 
         self._model.fc = nn.Linear(512, 7)
@@ -114,14 +117,17 @@ class FER2013Trainer(Trainer):
             )
 
         # define loss function (criterion) and optimizer
+        # class_weights = [
+        #     1.02660468,
+        #     9.40661861,
+        #     1.00104606,
+        #     0.56843877,
+        #     0.84912748,
+        #     1.29337298,
+        #     0.82603942,
+        # ]
         class_weights = [
-            1.02660468,
-            9.40661861,
-            1.00104606,
-            0.56843877,
-            0.84912748,
-            1.29337298,
-            0.82603942,
+            1, 1, 1, 1, 1, 1, 1, 1,
         ]
         class_weights = torch.FloatTensor(np.array(class_weights))
 
