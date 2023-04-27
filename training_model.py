@@ -37,9 +37,9 @@ data = pd.read_csv(
 train_set, test_set = train_test_split(data, test_size=0.2, random_state=42)
 train_set, val_set = train_test_split(train_set, test_size=0.2, random_state=42)
 
-# train_set = FER2013('train', configs=configs, tta=True)
-# val_set = FER2013('test', configs=configs)
-# test_set = FER2013('test', configs=configs)
+train = FER2013('train', configs=configs, dataset=train_set, tta=True)
+val = FER2013('test', configs=configs, dataset=val_set)
+test = FER2013('test', configs=configs, dataset=test_set)
 
 # class FER2013(Dataset):
 #     def __init__(self, stage, configs, tta=False, tta_size=48):
@@ -47,6 +47,6 @@ train_set, val_set = train_test_split(train_set, test_size=0.2, random_state=42)
 model = BaseNet(in_channels=configs['in_channels'], num_classes=configs['num_classes'])
 
 
-trainer = FER2013Trainer(model, train_set, val_set, test_set, configs)
+trainer = FER2013Trainer(model, train, val, test, configs)
 
 trainer.run()

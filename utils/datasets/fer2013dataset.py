@@ -21,7 +21,7 @@ EMOTION_DICT = {
 
 
 class FER2013(Dataset):
-    def __init__(self, stage, configs, tta=False, tta_size=48):
+    def __init__(self, stage, configs, dataset, tta=False, tta_size=48):
     # def __init__(self, configs, tta=False, tta_size=48):
         self._stage = stage
         self._configs = configs
@@ -31,10 +31,12 @@ class FER2013(Dataset):
         self._image_size = (configs["image_size"], configs["image_size"])
 
         # print(f'print print print {os.path.join(configs["data_path"], "{}.csv".format(stage))}')
-        self._data = pd.read_csv(
-            # os.path.join(configs["data_path"], "{}.csv".format(stage))
-            configs['csv_path']
-        )
+        # self._data = pd.read_csv(
+        #     # os.path.join(configs["data_path"], "{}.csv".format(stage))
+        #     configs['csv_path']
+        # )
+        
+        self._data = dataset
 
         self._pixels = self._data["pixels"].tolist()
         self._emotions = pd.get_dummies(self._data["emotion"])
