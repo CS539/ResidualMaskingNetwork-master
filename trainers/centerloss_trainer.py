@@ -424,7 +424,7 @@ class FER2013Trainer(Trainer):
     def _logging(self):
         consume_time = str(datetime.datetime.now() - self._start_time)
 
-        message = "\nE{:03d}  {:.3f}/{:.3f}/{:.3f} {:.3f}/{:.3f}/{:.3f} | p{:02d}  Time {}\n".format(
+        message = "\nE{:03d}  train loss: {:.3f}/ val loss: {:.3f}/ best loss: {:.3f}\ntrain acc: {:.3f}/ val acc: {:.3f}/ best acc: {:.3f}\nplateau_count: {:02d}  Time {}\n".format(
             self._current_epoch_num,
             self._train_loss_list[-1],
             self._val_loss_list[-1],

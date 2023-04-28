@@ -24,18 +24,20 @@ EMO_DICT = {0: "ne", 1: "an", 2: "di", 3: "fe",
             4: "ha", 5: "sa", 6: "su"}
 
 
-class Trainer(object):
-    """base class for trainers"""
+# class Trainer(object):
+#     """base class for trainers"""
 
-    def __init__(self):
-        pass
+#     def __init__(self):
+#         pass
 
 
-class FER2013Trainer(Trainer):
+# class FER2013Trainer(Trainer):
+class FER2013Trainer(nn.Module):
     """for classification task"""
 
     def __init__(self, model, train_set, val_set, test_set, configs):
-        super().__init__()
+        # super().__init__()
+        super(FER2013Trainer, self).__init__()
         print("Start trainer..")
         print(configs)
 
@@ -404,7 +406,7 @@ class FER2013Trainer(Trainer):
     def _logging(self):
         consume_time = str(datetime.datetime.now() - self._start_time)
 
-        message = "\nE{:03d}  {:.3f}/{:.3f}/{:.3f} {:.3f}/{:.3f}/{:.3f} | p{:02d}  Time {}\n".format(
+        message = "\nE{:03d}  train loss: {:.3f}/ val loss: {:.3f}/ best loss: {:.3f}\ntrain acc: {:.3f}/ val acc: {:.3f}/ best acc: {:.3f}\nplateau_count: {:02d}  Time {}\n".format(
             self._current_epoch_num,
             self._train_loss_list[-1],
             self._val_loss_list[-1],
@@ -462,3 +464,6 @@ class FER2013Trainer(Trainer):
         }
 
         torch.save(state, self._checkpoint_path)
+        
+    def get_model(self):
+        return self._model

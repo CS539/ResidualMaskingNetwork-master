@@ -35,6 +35,7 @@ def main(config_path):
     # load configs and set random seed
     configs = json.load(open(config_path))
     configs["cwd"] = os.getcwd()
+    # configs['cwd'] = '~usr/local/lib/python3.10/dist-packages/torch/cuda/'
 
     # load model and data_loader
     model = get_model(configs)
@@ -53,6 +54,8 @@ def main(config_path):
         mp.spawn(trainer.train, nprocs=ngpus, args=())
     else:
         trainer.train()
+
+    torch.save(trainer.get_model.state_dict(), './our_model')
 
 
 def get_model(configs):
