@@ -1,6 +1,6 @@
 {
-	"data_path": "train.csv",
-	"image_size": 224,
+	"data_path": "image_pixels.csv",
+	"image_size": 96,
 	"in_channels": 3,
 	"num_classes": 7,
 	"arch": "resnet34",

@@ -57,11 +57,11 @@ class FER2013(Dataset):
     def __getitem__(self, idx):
         pixels = self._pixels[idx]
         pixels = list(map(int, pixels.split(" ")))
-        image = np.asarray(pixels).reshape(96, 96)
+        image = np.asarray(pixels).reshape(3, 96, 96).transpose(1, 2, 0)
         image = image.astype(np.uint8)
 
         image = cv2.resize(image, self._image_size)
-        image = np.dstack([image] * 3)
+        # image = np.dstack([image] * 3)
 
         # if self._stage == "train":
         if self._stage == 'test':

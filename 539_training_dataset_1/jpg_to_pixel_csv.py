@@ -12,9 +12,11 @@ def image_to_pixels(filepath):
     with Image.open(filepath) as im:
         # pixel_values = np.array(im)
         pixels = list(im.getdata())
+        num = len(pixels)
         pixels = [val for pixel in pixels for val in pixel]
         pixels_str = ' '.join(str(p) for p in pixels)
-        return pixels_str
+        return pixels_str, num
+        # return pixels, num
 
 
 emotion = ['anger', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise']
@@ -36,6 +38,9 @@ def get_image_pixels():
     train = []
     val = []
     test = []
+    tr = 0
+    va = 0
+    te = 0
     for e in emotion:
         root_dir = './' + e
         for dirpath, dirnames, filenames in os.walk(root_dir):
@@ -50,19 +55,23 @@ def get_image_pixels():
                         usage = 'test'
 
                     filepath = os.path.join(dirpath, filename)
-                    pixels = image_to_pixels(filepath)
+                    pixels, len = image_to_pixels(filepath)
                     data.append({'filename': filename, 'emotion': EMO_DICT[e],
                                 'pixels': pixels, 'Usage': usage})
                     
                     if usage == 'train':
                         train.append({'filename': filename, 'emotion': EMO_DICT[e],
                                 'pixels': pixels, 'Usage': usage})
+                        tr += 1
                     elif usage == 'val':
-                        train.append({'filename': filename, 'emotion': EMO_DICT[e],
+                        val.append({'filename': filename, 'emotion': EMO_DICT[e],
                                 'pixels': pixels, 'Usage': usage})
+                        va += 1
                     else:
-                        train.append({'filename': filename, 'emotion': EMO_DICT[e],
+                        test.append({'filename': filename, 'emotion': EMO_DICT[e],
                                 'pixels': pixels, 'Usage': usage})
+                        te += 1
+    print(f'train: {tr}, validation: {va}, test: {te}, pixel len: {len}')
     return (data, train, val, test)
 
 
