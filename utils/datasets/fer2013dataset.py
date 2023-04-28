@@ -80,25 +80,25 @@ class FER2013(Dataset):
         return image, target
 
 
-def fer2013(stage, configs=None, tta=False, tta_size=48):
-    return FER2013(stage, configs, tta, tta_size)
+def fer2013(stage, configs=None, dataset=None, tta=False, tta_size=48):
+    return FER2013(stage, configs, dataset, tta, tta_size)
 
 
 if __name__ == "__main__":
     data = FER2013(
         "train",
         {
-            "data_path": "../../Kaggle_raw_dataset/",
+            "data_path": "./539_training_dataset_1/",
             "image_size": 96,
             "in_channels": 3,
         },
     )
     import cv2
 
-    # targets = []
+    targets = []
 
-    # for i in range(len(data)):
-    #     image, target = data[i]
-    #     cv2.imwrite("debug/{}.png".format(i), image)
-    #     if i == 200:
-    #         break
+    for i in range(len(data)):
+        image, target = data[i]
+        cv2.imwrite("debug/{}.png".format(i), image)
+        if i == 200:
+            break

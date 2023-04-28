@@ -1,3 +1,10 @@
+from models import segmentation
+import models
+import pandas as pd
+import torch.multiprocessing as mp
+import torch
+import numpy as np
+import imgaug
 import json
 import os
 import random
@@ -5,10 +12,6 @@ import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
-import imgaug
-import numpy as np
-import torch
-import torch.multiprocessing as mp
 
 seed = 1234
 random.seed(seed)
@@ -18,10 +21,6 @@ torch.cuda.manual_seed_all(seed)
 np.random.seed(seed)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
-
-
-import models
-from models import segmentation
 
 
 def main(config_path):
@@ -77,11 +76,20 @@ def get_dataset(configs):
     """
     from utils.datasets.fer2013dataset import fer2013
 
+    data = pd.read_csv('./train.csv')
+
+    train = pd.read_csv('./image_pixels_train.csv')
+    val = pd.read_csv('./image_pixels_val.csv')
+    test = pd.read_csv('./image_pixels_test.csv')
+
     # todo: add transform
-    train_set = fer2013("train", configs)
-    val_set = fer2013("val", configs)
-    test_set = fer2013("test", configs, tta=True, tta_size=10)
+    train_set = fer2013("train", configs, train)
+    val_set = fer2013("val", configs, val)
+    test_set = fer2013("test", configs, test, tta=True, tta_size=10)
     return train_set, val_set, test_set
+
+# def fer2013(stage, configs=None, dataset=None, tta=False, tta_size=48):
+#     return FER2013(stage, configs, dataset, tta, tta_size)
 
 
 if __name__ == "__main__":

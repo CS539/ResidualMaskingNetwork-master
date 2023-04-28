@@ -33,6 +33,9 @@ EMO_DICT = {"neutral": 0,
 
 def get_image_pixels():
     data = []
+    train = []
+    val = []
+    test = []
     for e in emotion:
         root_dir = './' + e
         for dirpath, dirnames, filenames in os.walk(root_dir):
@@ -50,13 +53,39 @@ def get_image_pixels():
                     pixels = image_to_pixels(filepath)
                     data.append({'filename': filename, 'emotion': EMO_DICT[e],
                                 'pixels': pixels, 'Usage': usage})
-    return data
+                    
+                    if usage == 'train':
+                        train.append({'filename': filename, 'emotion': EMO_DICT[e],
+                                'pixels': pixels, 'Usage': usage})
+                    elif usage == 'val':
+                        train.append({'filename': filename, 'emotion': EMO_DICT[e],
+                                'pixels': pixels, 'Usage': usage})
+                    else:
+                        train.append({'filename': filename, 'emotion': EMO_DICT[e],
+                                'pixels': pixels, 'Usage': usage})
+    return (data, train, val, test)
 
 
 # Write the pixel data to a CSV file
-data = get_image_pixels()
+data, train, val, test = get_image_pixels()
 with open('../image_pixels.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(['filename', 'emotion', 'pixels', 'Usage'])
     for row in data:
+        writer.writerow([row['filename'], row['emotion'], row['pixels'], row['Usage']])
+
+with open('../image_pixels_train.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['filename', 'emotion', 'pixels', 'Usage'])
+    for row in train:
+        writer.writerow([row['filename'], row['emotion'], row['pixels'], row['Usage']])
+with open('../image_pixels_val.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['filename', 'emotion', 'pixels', 'Usage'])
+    for row in val:
+        writer.writerow([row['filename'], row['emotion'], row['pixels'], row['Usage']])        
+with open('../image_pixels_test.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['filename', 'emotion', 'pixels', 'Usage'])
+    for row in test:
         writer.writerow([row['filename'], row['emotion'], row['pixels'], row['Usage']])
