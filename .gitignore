@@ -153,7 +153,6 @@ cython_debug/
 
 # UW_Madison CS539 Project
 # Freely add and delete what you need to upload
-# Keggle_raw_dataset
 checkpoint/
 log/
 pretrained_ckpt
