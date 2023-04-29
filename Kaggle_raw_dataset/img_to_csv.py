@@ -45,7 +45,7 @@ def get_image_pixels():
         root_dir = './' + e
         for dirpath, dirnames, filenames in os.walk(root_dir):
             for filename in filenames:
-                if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg'):
+                if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg') or filename.lower().endswith('.png'):
                     random_number = random.randint(0, 99)
                     if 0 <= random_number and random_number < 60:
                         usage = 'train'
