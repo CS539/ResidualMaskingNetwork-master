@@ -112,7 +112,7 @@ FER_2013_EMO_DICT = {
     4: "happy",
     5: "sad",
     6: "surprise",
-    7: "contempt"
+    # 7: "contempt"
 }
 
 is_cuda = torch.cuda.is_available()

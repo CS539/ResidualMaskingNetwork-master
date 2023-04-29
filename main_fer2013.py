@@ -55,7 +55,10 @@ def main(config_path):
     else:
         trainer.train()
 
-    torch.save(trainer.get_model.state_dict(), './our_model')
+    trained_model = trainer.get_model()
+
+    torch.save(trained_model.state_dict(), './res10_300x300_ssd_iter_140000.caffemodel')
+    # torch.save(trained_model, './res10_300x300_ssd_iter_140000.caffemodel')
 
 
 def get_model(configs):

@@ -1,5 +1,5 @@
 {
-	"data_path": "image_pixels.csv",
+	"data_path": "./image_pixels.csv",
 	"image_size": 96,
 	"in_channels": 3,
 	"num_classes": 7,

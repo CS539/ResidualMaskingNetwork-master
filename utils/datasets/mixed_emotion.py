@@ -20,7 +20,7 @@ from torchvision.transforms import transforms
     4: "happy",
     5: "sad",
     6: "surprise",
-    7: "contempt"
+    # 7: "contempt"
 """
 
 class mixed_emotion(Dataset):

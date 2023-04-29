@@ -9,7 +9,9 @@ import os
 
 
 EMO_DICT = {"neutral": 0, "anger": 1, "disgust": 2, "fear": 3,
-            "happy": 4, "sad": 5, "surprise": 6, "contempt": 7}
+            "happy": 4, "sad": 5, "surprise": 6
+            # , "contempt": 7
+            }
 
 # Define a CNN
 

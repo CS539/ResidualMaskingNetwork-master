@@ -16,7 +16,7 @@ EMOTION_DICT = {
     4: "happy",
     5: "sad",
     6: "surprise",
-    7: "contempt"
+    # 7: "contempt"
 }
 
 
