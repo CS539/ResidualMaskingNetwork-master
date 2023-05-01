@@ -12,7 +12,7 @@
 	"batch_size": 48,
 	"num_workers": 8,
 	"device": "cuda:0",
-	"max_epoch_num": 50,
+	"max_epoch_num": 150,
 	"max_plateau_count": 8,
 	"plateau_patience": 2,
 	"steplr": 50,
