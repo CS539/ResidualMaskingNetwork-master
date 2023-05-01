@@ -57,7 +57,7 @@ def main(config_path):
 
     trained_model = trainer.get_model()
 
-    torch.save(trained_model.state_dict(), './res10_300x300_ssd_iter_140000.caffemodel')
+    torch.save(trained_model.state_dict(), './pretrained_ckpt')
     # torch.save(trained_model, './res10_300x300_ssd_iter_140000.caffemodel')
 
 
@@ -82,7 +82,7 @@ def get_dataset(configs):
     """
     from utils.datasets.fer2013dataset import fer2013
 
-    data = pd.read_csv('./train.csv')
+    data = pd.read_csv('./image_pixels.csv')
 
     train = pd.read_csv('./image_pixels_train.csv')
     val = pd.read_csv('./image_pixels_val.csv')
