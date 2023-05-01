@@ -3,8 +3,6 @@ from rmn import RMN
 
 m = RMN()
 
-# m.video_demo()
-
 # ## Step 2: convert our GIF inputs to images
 # import save_gif_to_imgs as sgti
 
