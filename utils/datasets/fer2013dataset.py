@@ -9,20 +9,18 @@ from torchvision.transforms import transforms
 from utils.augmenters.augment import seg
 
 EMOTION_DICT = {
-    0: "neutral",
-    1: "anger",
-    2: "disgust",
-    3: "fear",
-    4: "happy",
-    5: "sad",
-    6: "surprise",
-    # 7: "contempt"
+    0: "angry",
+    1: "disgust",
+    2: "fear",
+    3: "happy",
+    4: "sad",
+    5: "surprise",
+    6: "neutral",
 }
 
 
 class FER2013(Dataset):
-    def __init__(self, stage, configs, dataset, tta=False, tta_size=48):
-    # def __init__(self, configs, tta=False, tta_size=48):
+    def __init__(self, stage, configs, tta=False, tta_size=48):
         self._stage = stage
         self._configs = configs
         self._tta = tta
@@ -30,13 +28,9 @@ class FER2013(Dataset):
 
         self._image_size = (configs["image_size"], configs["image_size"])
 
-        # print(f'print print print {os.path.join(configs["data_path"], "{}.csv".format(stage))}')
-        # self._data = pd.read_csv(
-        #     # os.path.join(configs["data_path"], "{}.csv".format(stage))
-        #     configs['csv_path']
-        # )
-        
-        self._data = dataset
+        self._data = pd.read_csv(
+            os.path.join(configs["data_path"], "{}.csv".format(stage))
+        )
 
         self._pixels = self._data["pixels"].tolist()
         self._emotions = pd.get_dummies(self._data["emotion"])
@@ -57,20 +51,18 @@ class FER2013(Dataset):
     def __getitem__(self, idx):
         pixels = self._pixels[idx]
         pixels = list(map(int, pixels.split(" ")))
-        image = np.asarray(pixels).reshape(3, 96, 96).transpose(1, 2, 0)
+        image = np.asarray(pixels).reshape(48, 48)
         image = image.astype(np.uint8)
 
         image = cv2.resize(image, self._image_size)
-        # image = np.dstack([image] * 3)
+        image = np.dstack([image] * 3)
 
-        # if self._stage == "train":
-        if self._stage == 'test':
+        if self._stage == "train":
             image = seg(image=image)
 
-        # if self._stage == "test" and self._tta == True:
-        if self._stage == "train" and self._tta == True:
+        if self._stage == "test" and self._tta == True:
             images = [seg(image=image) for i in range(self._tta_size)]
-            images = [image for i in range(self._tta_size)]
+            # images = [image for i in range(self._tta_size)]
             images = list(map(self._transform, images))
             target = self._emotions.iloc[idx].idxmax()
             return images, target
@@ -80,16 +72,16 @@ class FER2013(Dataset):
         return image, target
 
 
-def fer2013(stage, configs=None, dataset=None, tta=False, tta_size=48):
-    return FER2013(stage, configs, dataset, tta, tta_size)
+def fer2013(stage, configs=None, tta=False, tta_size=48):
+    return FER2013(stage, configs, tta, tta_size)
 
 
 if __name__ == "__main__":
     data = FER2013(
         "train",
         {
-            "data_path": "./539_training_dataset_1/",
-            "image_size": 96,
+            "data_path": "/home/z/research/tee/saved/data/fer2013/",
+            "image_size": 224,
             "in_channels": 3,
         },
     )

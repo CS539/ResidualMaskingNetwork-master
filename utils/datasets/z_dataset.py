@@ -10,14 +10,13 @@ from torchvision.transforms import transforms
 from utils.augmenters.augment import seg
 
 EMOTION_DICT = {
-    0: "neutral",
-    1: "anger",
-    2: "disgust",
-    3: "fear",
-    4: "happy",
-    5: "sad",
-    6: "surprise",
-    # 7: "contempt"
+    0: "angry",
+    1: "disgust",
+    2: "fear",
+    3: "happy",
+    4: "sad",
+    5: "surprise",
+    6: "neutral",
 }
 
 

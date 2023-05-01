@@ -12,16 +12,6 @@ from torchvision.transforms import transforms
 # TODO: check what if we capitalize the class Name and
 # make another function to return this class
 
-"""
-    0: "neutral",
-    1: "anger",
-    2: "disgust",
-    3: "fear",
-    4: "happy",
-    5: "sad",
-    6: "surprise",
-    # 7: "contempt"
-"""
 
 class mixed_emotion(Dataset):
     def __init__(self, root_dir, stage, configs, transform=None):
@@ -33,7 +23,6 @@ class mixed_emotion(Dataset):
             "ha": 4,
             "sa": 5,
             "su": 6,
-            "co": 7
         }
 
         self._configs = configs
@@ -108,7 +97,6 @@ class mixed_infer(Dataset):
             "ha": 4,
             "sa": 5,
             "su": 6,
-            "co": 7
         }
 
         self._configs = configs
