@@ -44,7 +44,9 @@ def main(config_path):
 
     # init trainer and make a training
     # from trainers.fer2013_trainer import FER2013Trainer
-    from trainers.tta_trainer import FER2013Trainer
+    # from trainers.tta_trainer import FER2013Trainer
+
+    from trainers._fer2013_trainer import FER2013Trainer
 
     # from trainers.centerloss_trainer import FER2013Trainer
     trainer = FER2013Trainer(model, train_set, val_set, test_set, configs)
@@ -55,9 +57,10 @@ def main(config_path):
     else:
         trainer.train()
 
-    trained_model = trainer.get_model()
+    trained_model = trainer._model
 
     torch.save(trained_model.state_dict(), './pretrained_ckpt')
+    print('Complete training')
     # torch.save(trained_model, './res10_300x300_ssd_iter_140000.caffemodel')
 
 
@@ -82,7 +85,7 @@ def get_dataset(configs):
     """
     from utils.datasets.fer2013dataset import fer2013
 
-    data = pd.read_csv('./image_pixels.csv')
+    # data = pd.read_csv('./image_pixels.csv')
 
     train = pd.read_csv('./image_pixels_train.csv')
     val = pd.read_csv('./image_pixels_val.csv')

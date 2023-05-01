@@ -127,11 +127,11 @@ image_size = (configs["image_size"], configs["image_size"])
 
 
 def get_emo_model():
-    emo_model = resmasking_dropout1(in_channels=3, num_classes=8)
+    emo_model = resmasking_dropout1(in_channels=3, num_classes=7)
     if is_cuda:
         emo_model.cuda(0)
     state = torch.load(local_checkpoint_path, map_location="cpu")
-    emo_model.load_state_dict(state)
+    # emo_model.load_state_dict(state)
     emo_model.eval()
     return emo_model
 
@@ -368,6 +368,7 @@ class RMN:
                     "proba_list": proba_list,
                 }
             )
+            print(emo_label, emo_proba)
         return results
 
     # Function to detect emotions for one gif and store the result images in new folder

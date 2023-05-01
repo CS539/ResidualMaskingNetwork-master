@@ -323,7 +323,7 @@ class FER2013Trainer(nn.Module):
 
     def train(self):
         """make a training job"""
-        # print(self._model)
+        print(f'\n\nmodel: {self._model}\n\n')
 
         # freeze the model
 

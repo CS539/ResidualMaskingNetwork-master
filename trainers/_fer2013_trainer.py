@@ -1,4 +1,5 @@
 """this class build and run a trainer by a configuration"""
+import torch.nn.functional as F
 import datetime
 import os
 
@@ -175,7 +176,7 @@ class FER2013Trainer(Trainer):
         # for checkpoints
         self._checkpoint_dir = os.path.join(self._configs["cwd"], "saved/checkpoints")
         if not os.path.exists(self._checkpoint_dir):
-            os.makedirs(checkpoint_dir, exist_ok=True)
+            os.makedirs(self._checkpoint_dir, exist_ok=True)
 
         self._checkpoint_path = os.path.join(
             self._checkpoint_dir,
@@ -261,35 +262,53 @@ class FER2013Trainer(Trainer):
         print("Accuracy on private test: {:.3f}".format(test_acc))
         return test_acc
 
+    # def make_batch(images):
+    #     if not isinstance(images, list):
+    #         images = [images]
+    #     return torch.stack(images, 0)
+
     def _calc_acc_on_private_test_with_tta(self):
         self._model.eval()
         test_acc = 0.0
-        print("Calc acc on private test..")
-
-        transform = transforms.Compose(
-            [
-                transforms.ToPILImage(),
-            ]
+        print("Calc acc on private test with tta..")
+        f = open(
+            "private_test_log_{}_{}.txt".format(
+                self._configs["arch"], self._configs["model_name"]
+            ),
+            "w",
         )
 
-        for idx in len(self._test_set):
-            image, label = self._test_set[idx]
-
         with torch.no_grad():
-            for i, (images, targets) in tqdm(
-                enumerate(self._test_loader), total=len(self._test_loader), leave=False
+            for idx in tqdm(
+                range(len(self._test_set)), total=len(self._test_set), leave=False
             ):
+                images, targets = self._test_set[idx]
+                targets = torch.LongTensor([targets])
 
-                # TODO: implement augment when predict
+                # images = make_batch(images)
+                if not isinstance(images, list):
+                    images = [images]
+                images = torch.stack(images, 0)
+
                 images = images.cuda(non_blocking=True)
                 targets = targets.cuda(non_blocking=True)
 
                 outputs = self._model(images)
+                outputs = F.softmax(outputs, 1)
+
+                # outputs.shape [tta_size, 7]
+                outputs = torch.sum(outputs, 0)
+
+                outputs = torch.unsqueeze(outputs, 0)
+                # print(outputs.shape)
+                # TODO: try with softmax first and see the change
                 acc = accuracy(outputs, targets)[0]
                 test_acc += acc.item()
+                f.writelines("{}_{}\n".format(idx, acc.item()))
 
-            test_acc = test_acc / (i + 1)
-        print("Accuracy on private test: {:.3f}".format(test_acc))
+            test_acc = test_acc / (idx + 1)
+        print("Accuracy on private test with tta: {:.3f}".format(test_acc))
+        f.close()
         return test_acc
 
     def _calc_acc_on_private_test(self):

@@ -7,7 +7,7 @@ import imageio
 #   gif_name:   specific gif name that user want to convert
 def make_gif(input_path:str, gif_name: str):
     # Handle the exception of not given inputs
-    if(input_path is "" or gif_name is ""):
+    if(input_path == "" or gif_name == ""):
         print("\nError: Given inputs are empty!\n")
         return 
     

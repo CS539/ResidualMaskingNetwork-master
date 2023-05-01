@@ -154,12 +154,11 @@ cython_debug/
 # UW_Madison CS539 Project
 # Freely add and delete what you need to upload
 # Keggle_raw_dataset
+checkpoints/
 checkpoint/
 log/
 pretrained_ckpt
 res10_300x300_ssd_iter_140000.caffemodel
 deploy.prototxt.txt
-image_pixels.csv
-image_pixels_test.csv
-image_pixels_train.csv
-image_pixels_val.csv
+image_pixels*
+GIF_output/
