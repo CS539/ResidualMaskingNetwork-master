@@ -25,7 +25,7 @@ def show(img, name="disp", width=1000):
 
 
 ##########################
-##This should be changed##
+## This should be changed##
 ##########################
 
 checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/Z_resmasking_dropout1_rot30_2019Nov30_13.32"
@@ -389,7 +389,7 @@ class RMN:
         # output_path = f'./GIF_output/rmn_first_results/{gif_name}'
         input_path = f'{input_path}{gif_name}/'
         output_path = f'./GIF_output/rmn_first_results/{gif_name}'
-      
+
         # Check if the folder to store this function's results exists
         # If not, make new one
         if not os.path.exists(f'{output_path}'):
@@ -398,15 +398,15 @@ class RMN:
         # loop for converting each image using the name of the image file
         # And then store the result of detecting emotion for each frame to the deqeue list
         # Also, draw results on that image (frame) and save that image on the result folder
-       
+
         for frame_name in os.listdir(input_path):
 
             frame_name = f'{gif_name}_{i}.jpg'
             frame = cv2.imread(os.path.join(input_path, f'{frame_name}'))
-                      
-            if frame is not None: # there is a image                
+
+            if frame is not None:  # there is a image
                 frame_detection = self.detect_emotion_for_single_frame(frame)
-                if len(frame_detection) == 0 :
+                if len(frame_detection) == 0:
                     frame_detection.append(
                         {
                             "xmin": 0,
@@ -418,7 +418,7 @@ class RMN:
                             "proba_list": 0,
                         }
                     )
-                                 
+
                 else:
                     output_lists.append(frame_detection)
                     frame = self.draw(frame, frame_detection)
@@ -427,5 +427,5 @@ class RMN:
                 result_frame = Image.open(f'{input_path}{gif_name}_{i}.jpg').copy()
                 result_frame.save(f'{output_path}/{gif_name}_{i}_rmnResult.jpg')
                 cv2.imwrite(f'{output_path}/{gif_name}_{i}_rmnResult.jpg', frame)
-                i = i + 1  
-        return output_lists 
+                i = i + 1
+        return output_lists
