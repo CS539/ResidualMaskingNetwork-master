@@ -28,68 +28,68 @@ def show(img, name="disp", width=1000):
 ## This should be changed##
 ##########################
 
-# checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/Z_resmasking_dropout1_rot30_2019Nov30_13.32"
-# local_checkpoint_path = "pretrained_ckpt"
+checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/Z_resmasking_dropout1_rot30_2019Nov30_13.32"
+local_checkpoint_path = "pretrained_ckpt"
 
-# prototxt_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/deploy.prototxt.txt"
-# local_prototxt_path = "deploy.prototxt.txt"
+prototxt_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/deploy.prototxt.txt"
+local_prototxt_path = "deploy.prototxt.txt"
 
-# ssd_checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/res10_300x300_ssd_iter_140000.caffemodel"
-# local_ssd_checkpoint_path = "res10_300x300_ssd_iter_140000.caffemodel"
+ssd_checkpoint_url = "https://github.com/phamquiluan/ResidualMaskingNetwork/releases/download/v0.0.1/res10_300x300_ssd_iter_140000.caffemodel"
+local_ssd_checkpoint_path = "res10_300x300_ssd_iter_140000.caffemodel"
 
 ##########################
 ##########################
 
 
-# def download_checkpoint(remote_url, local_path):
-#     import requests
-#     from tqdm import tqdm
+def download_checkpoint(remote_url, local_path):
+    import requests
+    from tqdm import tqdm
 
-#     response = requests.get(remote_url, stream=True)
-#     total_size_in_bytes = int(response.headers.get("content-length", 0))
-#     block_size = 1024  # 1 Kibibyte
+    response = requests.get(remote_url, stream=True)
+    total_size_in_bytes = int(response.headers.get("content-length", 0))
+    block_size = 1024  # 1 Kibibyte
 
-#     progress_bar = tqdm(
-#         desc=f"Downloading {local_path}..",
-#         total=total_size_in_bytes,
-#         unit="iB",
-#         unit_scale=True,
-#     )
+    progress_bar = tqdm(
+        desc=f"Downloading {local_path}..",
+        total=total_size_in_bytes,
+        unit="iB",
+        unit_scale=True,
+    )
 
-#     with open(local_path, "wb") as ref:
-#         for data in response.iter_content(block_size):
-#             progress_bar.update(len(data))
-#             ref.write(data)
+    with open(local_path, "wb") as ref:
+        for data in response.iter_content(block_size):
+            progress_bar.update(len(data))
+            ref.write(data)
 
-#     progress_bar.close()
-#     if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
-#         print("ERROR, something went wrong")
-
-
-# for remote_path, local_path in [
-#     (checkpoint_url, local_checkpoint_path),
-#     (prototxt_url, local_prototxt_path),
-#     (ssd_checkpoint_url, local_ssd_checkpoint_path),
-# ]:
-#     if not os.path.exists(local_path):
-#         print(f"{local_path} does not exists!")
-#         download_checkpoint(remote_url=remote_path, local_path=local_path)
+    progress_bar.close()
+    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
+        print("ERROR, something went wrong")
 
 
-# def ensure_color(image):
-#     if len(image.shape) == 2:
-#         return np.dstack([image] * 3)
-#     elif image.shape[2] == 1:
-#         return np.dstack([image] * 3)
-#     return image
+for remote_path, local_path in [
+    (checkpoint_url, local_checkpoint_path),
+    (prototxt_url, local_prototxt_path),
+    (ssd_checkpoint_url, local_ssd_checkpoint_path),
+]:
+    if not os.path.exists(local_path):
+        print(f"{local_path} does not exists!")
+        download_checkpoint(remote_url=remote_path, local_path=local_path)
 
 
-# def ensure_gray(image):
-#     try:
-#         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-#     except cv2.error:
-#         pass
-#     return image
+def ensure_color(image):
+    if len(image.shape) == 2:
+        return np.dstack([image] * 3)
+    elif image.shape[2] == 1:
+        return np.dstack([image] * 3)
+    return image
+
+
+def ensure_gray(image):
+    try:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    except cv2.error:
+        pass
+    return image
 
 
 def get_ssd_face_detector():
@@ -126,29 +126,29 @@ with open(config_path) as ref:
 image_size = (configs["image_size"], configs["image_size"])
 
 
-# def get_emo_model():
-#     emo_model = resmasking_dropout1(in_channels=3, num_classes=7)
-#     if is_cuda:
-#         emo_model.cuda(0)
-#     state = torch.load(local_checkpoint_path, map_location="cpu")
-#     # emo_model.load_state_dict(state)
-#     emo_model.eval()
-#     return emo_model
+def get_emo_model():
+    emo_model = resmasking_dropout1(in_channels=3, num_classes=7)
+    if is_cuda:
+        emo_model.cuda(0)
+    state = torch.load(local_checkpoint_path, map_location="cpu")
+    # emo_model.load_state_dict(state)
+    emo_model.eval()
+    return emo_model
 
 
-# def convert_to_square(xmin, ymin, xmax, ymax):
-#     # convert to square location
-#     center_x = (xmin + xmax) // 2
-#     center_y = (ymin + ymax) // 2
+def convert_to_square(xmin, ymin, xmax, ymax):
+    # convert to square location
+    center_x = (xmin + xmax) // 2
+    center_y = (ymin + ymax) // 2
 
-#     square_length = ((xmax - xmin) + (ymax - ymin)) // 2 // 2
-#     square_length *= 1.1
+    square_length = ((xmax - xmin) + (ymax - ymin)) // 2 // 2
+    square_length *= 1.1
 
-#     xmin = int(center_x - square_length)
-#     ymin = int(center_y - square_length)
-#     xmax = int(center_x + square_length)
-#     ymax = int(center_y + square_length)
-#     return xmin, ymin, xmax, ymax
+    xmin = int(center_x - square_length)
+    ymin = int(center_y - square_length)
+    xmax = int(center_x + square_length)
+    ymax = int(center_y + square_length)
+    return xmin, ymin, xmax, ymax
 
 
 class RMN:
@@ -203,122 +203,122 @@ class RMN:
 
         return emo_label, emo_proba, proba_list
 
-    # @torch.no_grad()
-    # def video_demo(self):
-    #     vid = cv2.VideoCapture(0)
+    @torch.no_grad()
+    def video_demo(self):
+        vid = cv2.VideoCapture(0)
 
-    #     while True:
-    #         ret, frame = vid.read()
-    #         if frame is None or ret is not True:
-    #             continue
+        while True:
+            ret, frame = vid.read()
+            if frame is None or ret is not True:
+                continue
 
-    #         try:
-    #             frame = np.fliplr(frame).astype(np.uint8)
+            try:
+                frame = np.fliplr(frame).astype(np.uint8)
 
-    #             results = self.detect_emotion_for_single_frame(frame)
-    #             frame = self.draw(frame, results)
+                results = self.detect_emotion_for_single_frame(frame)
+                frame = self.draw(frame, results)
 
-    #             cv2.rectangle(frame, (1, 1), (220, 25), (223, 128, 255), cv2.FILLED)
-    #             cv2.putText(
-    #                 frame,
-    #                 f"press q to exit",
-    #                 (20, 20),
-    #                 cv2.FONT_HERSHEY_SIMPLEX,
-    #                 0.8,
-    #                 (0, 0, 0),
-    #                 2,
-    #             )
-    #             cv2.imshow("disp", frame)
-    #             if cv2.waitKey(1) == ord("q"):
-    #                 break
+                cv2.rectangle(frame, (1, 1), (220, 25), (223, 128, 255), cv2.FILLED)
+                cv2.putText(
+                    frame,
+                    f"press q to exit",
+                    (20, 20),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.8,
+                    (0, 0, 0),
+                    2,
+                )
+                cv2.imshow("disp", frame)
+                if cv2.waitKey(1) == ord("q"):
+                    break
 
-    #         except Exception as err:
-    #             print(err)
-    #             continue
+            except Exception as err:
+                print(err)
+                continue
 
-    #     cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
 
-    # @staticmethod
-    # def draw(frame, results):
-    #     """
-    #     Params:
-    #     ---------
-    #     frame : np.ndarray
+    @staticmethod
+    def draw(frame, results):
+        """
+        Params:
+        ---------
+        frame : np.ndarray
 
-    #     results : list of dict.keys('xmin', 'xmax', 'ymin', 'ymax', 'emo_label', 'emo_proba')
+        results : list of dict.keys('xmin', 'xmax', 'ymin', 'ymax', 'emo_label', 'emo_proba')
 
-    #     Returns:
-    #     ---------
-    #     frame : np.ndarray
-    #     """
-    #     for r in results:
-    #         xmin = r["xmin"]
-    #         xmax = r["xmax"]
-    #         ymin = r["ymin"]
-    #         ymax = r["ymax"]
-    #         emo_label = r["emo_label"]
-    #         emo_proba = r["emo_proba"]
+        Returns:
+        ---------
+        frame : np.ndarray
+        """
+        for r in results:
+            xmin = r["xmin"]
+            xmax = r["xmax"]
+            ymin = r["ymin"]
+            ymax = r["ymax"]
+            emo_label = r["emo_label"]
+            emo_proba = r["emo_proba"]
 
-    #         label_size, base_line = cv2.getTextSize(
-    #             f"{emo_label}: 000", cv2.FONT_HERSHEY_SIMPLEX, 0.8, 2
-    #         )
+            label_size, base_line = cv2.getTextSize(
+                f"{emo_label}: 000", cv2.FONT_HERSHEY_SIMPLEX, 0.8, 2
+            )
 
-    #         # draw face
-    #         cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (179, 255, 179), 2)
+            # draw face
+            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (179, 255, 179), 2)
 
-    #         cv2.rectangle(
-    #             frame,
-    #             (xmax, ymin + 1 - label_size[1]),
-    #             (xmax + label_size[0], ymin + 1 + base_line),
-    #             (223, 128, 255),
-    #             cv2.FILLED,
-    #         )
-    #         cv2.putText(
-    #             frame,
-    #             f"{emo_label} {int(emo_proba * 100)}",
-    #             (xmax, ymin + 1),
-    #             cv2.FONT_HERSHEY_SIMPLEX,
-    #             0.8,
-    #             (0, 0, 0),
-    #             2,
-    #         )
+            cv2.rectangle(
+                frame,
+                (xmax, ymin + 1 - label_size[1]),
+                (xmax + label_size[0], ymin + 1 + base_line),
+                (223, 128, 255),
+                cv2.FILLED,
+            )
+            cv2.putText(
+                frame,
+                f"{emo_label} {int(emo_proba * 100)}",
+                (xmax, ymin + 1),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.8,
+                (0, 0, 0),
+                2,
+            )
 
-    #     return frame
+        return frame
 
-    # def detect_faces(self, frame):
-    #     h, w = frame.shape[:2]
-    #     blob = cv2.dnn.blobFromImage(
-    #         cv2.resize(frame, (300, 300)),
-    #         1.0,
-    #         (300, 300),
-    #         (104.0, 177.0, 123.0),
-    #         False,
-    #         False,
-    #     )
-    #     self.face_detector.setInput(blob)
-    #     faces = self.face_detector.forward()
+    def detect_faces(self, frame):
+        h, w = frame.shape[:2]
+        blob = cv2.dnn.blobFromImage(
+            cv2.resize(frame, (300, 300)),
+            1.0,
+            (300, 300),
+            (104.0, 177.0, 123.0),
+            False,
+            False,
+        )
+        self.face_detector.setInput(blob)
+        faces = self.face_detector.forward()
 
-    #     face_results = []
-    #     for i in range(0, faces.shape[2]):
-    #         confidence = faces[0, 0, i, 2]
-    #         if confidence < 0.5:
-    #             continue
-    #         xmin, ymin, xmax, ymax = (
-    #             faces[0, 0, i, 3:7] * np.array([w, h, w, h])
-    #         ).astype("int")
-    #         xmin, ymin, xmax, ymax = convert_to_square(xmin, ymin, xmax, ymax)
-    #         if xmax <= xmin or ymax <= ymin:
-    #             continue
+        face_results = []
+        for i in range(0, faces.shape[2]):
+            confidence = faces[0, 0, i, 2]
+            if confidence < 0.5:
+                continue
+            xmin, ymin, xmax, ymax = (
+                faces[0, 0, i, 3:7] * np.array([w, h, w, h])
+            ).astype("int")
+            xmin, ymin, xmax, ymax = convert_to_square(xmin, ymin, xmax, ymax)
+            if xmax <= xmin or ymax <= ymin:
+                continue
 
-    #         face_results.append(
-    #             {
-    #                 "xmin": xmin,
-    #                 "ymin": ymin,
-    #                 "xmax": xmax,
-    #                 "ymax": ymax,
-    #             }
-    #         )
-    #     return face_results
+            face_results.append(
+                {
+                    "xmin": xmin,
+                    "ymin": ymin,
+                    "xmax": xmax,
+                    "ymax": ymax,
+                }
+            )
+        return face_results
 
     @torch.no_grad()
     def detect_emotion_for_single_frame(self, frame):

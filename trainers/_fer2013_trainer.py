@@ -1,5 +1,4 @@
 """this class build and run a trainer by a configuration"""
-import torch.nn.functional as F
 import datetime
 import os
 
@@ -19,8 +18,7 @@ from utils.radam import RAdam
 # from torch.optim import SGD as RAdam
 
 
-EMO_DICT = {0: "ne", 1: "an", 2: "di", 3: "fe",
-            4: "ha", 5: "sa", 6: "su"}
+EMO_DICT = {0: "ne", 1: "an", 2: "di", 3: "fe", 4: "ha", 5: "sa", 6: "su"}
 
 
 class Trainer(object):
@@ -57,8 +55,6 @@ class FER2013Trainer(Trainer):
         self._model = model(
             in_channels=configs["in_channels"],
             num_classes=configs["num_classes"],
-            # configs['in_channels'],
-            # configs['num_classes']
         )
 
         self._model.fc = nn.Linear(512, 7)
@@ -118,17 +114,14 @@ class FER2013Trainer(Trainer):
             )
 
         # define loss function (criterion) and optimizer
-        # class_weights = [
-        #     1.02660468,
-        #     9.40661861,
-        #     1.00104606,
-        #     0.56843877,
-        #     0.84912748,
-        #     1.29337298,
-        #     0.82603942,
-        # ]
         class_weights = [
-            1, 1, 1, 1, 1, 1, 1, 1,
+            1.02660468,
+            9.40661861,
+            1.00104606,
+            0.56843877,
+            0.84912748,
+            1.29337298,
+            0.82603942,
         ]
         class_weights = torch.FloatTensor(np.array(class_weights))
 
@@ -176,7 +169,7 @@ class FER2013Trainer(Trainer):
         # for checkpoints
         self._checkpoint_dir = os.path.join(self._configs["cwd"], "saved/checkpoints")
         if not os.path.exists(self._checkpoint_dir):
-            os.makedirs(self._checkpoint_dir, exist_ok=True)
+            os.makedirs(checkpoint_dir, exist_ok=True)
 
         self._checkpoint_path = os.path.join(
             self._checkpoint_dir,
@@ -262,53 +255,35 @@ class FER2013Trainer(Trainer):
         print("Accuracy on private test: {:.3f}".format(test_acc))
         return test_acc
 
-    # def make_batch(images):
-    #     if not isinstance(images, list):
-    #         images = [images]
-    #     return torch.stack(images, 0)
-
     def _calc_acc_on_private_test_with_tta(self):
         self._model.eval()
         test_acc = 0.0
-        print("Calc acc on private test with tta..")
-        f = open(
-            "private_test_log_{}_{}.txt".format(
-                self._configs["arch"], self._configs["model_name"]
-            ),
-            "w",
+        print("Calc acc on private test..")
+
+        transform = transforms.Compose(
+            [
+                transforms.ToPILImage(),
+            ]
         )
 
+        for idx in len(self._test_set):
+            image, label = self._test_set[idx]
+
         with torch.no_grad():
-            for idx in tqdm(
-                range(len(self._test_set)), total=len(self._test_set), leave=False
+            for i, (images, targets) in tqdm(
+                enumerate(self._test_loader), total=len(self._test_loader), leave=False
             ):
-                images, targets = self._test_set[idx]
-                targets = torch.LongTensor([targets])
 
-                # images = make_batch(images)
-                if not isinstance(images, list):
-                    images = [images]
-                images = torch.stack(images, 0)
-
+                # TODO: implement augment when predict
                 images = images.cuda(non_blocking=True)
                 targets = targets.cuda(non_blocking=True)
 
                 outputs = self._model(images)
-                outputs = F.softmax(outputs, 1)
-
-                # outputs.shape [tta_size, 7]
-                outputs = torch.sum(outputs, 0)
-
-                outputs = torch.unsqueeze(outputs, 0)
-                # print(outputs.shape)
-                # TODO: try with softmax first and see the change
                 acc = accuracy(outputs, targets)[0]
                 test_acc += acc.item()
-                f.writelines("{}_{}\n".format(idx, acc.item()))
 
-            test_acc = test_acc / (idx + 1)
-        print("Accuracy on private test with tta: {:.3f}".format(test_acc))
-        f.close()
+            test_acc = test_acc / (i + 1)
+        print("Accuracy on private test: {:.3f}".format(test_acc))
         return test_acc
 
     def _calc_acc_on_private_test(self):
@@ -381,14 +356,10 @@ class FER2013Trainer(Trainer):
 
         self._scheduler.step(100 - self._val_acc[-1])
 
-    epoch_dict = {'E': [], 'train loss': [], 'val loss': [],
-        'best loss': [], 'train acc': [], 'val acc': [], 'best acc': []}
-
-
     def _logging(self):
         consume_time = str(datetime.datetime.now() - self._start_time)
 
-        message = "\nE{:03d}  train loss: {:.3f}/ val loss: {:.3f}/ best loss: {:.3f}\ntrain acc: {:.3f}/ val acc: {:.3f}/ best acc: {:.3f}\nplateau_count: {:02d}  Time {}\n".format(
+        message = "\nE{:03d}  {:.3f}/{:.3f}/{:.3f} {:.3f}/{:.3f}/{:.3f} | p{:02d}  Time {}\n".format(
             self._current_epoch_num,
             self._train_loss[-1],
             self._val_loss[-1],
@@ -399,8 +370,6 @@ class FER2013Trainer(Trainer):
             self._plateau_count,
             consume_time[:-7],
         )
-        
-        # epoch_dict['E'].append(self._current_epoch_num)
 
         self._writer.add_scalar(
             "Accuracy/Train", self._train_acc[-1], self._current_epoch_num
