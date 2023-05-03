@@ -9,11 +9,11 @@ from models import resmasking_dropout1
 from pathlib import Path
 
 # from ..ssd_infer import ensure_color
-from ..utils.utils import ensure_gray
-from ..utils.utils import ensure_color
+from utils.utils import ensure_gray
+from utils.utils import ensure_color
 
-# haar = '/home/z/anaconda3/lib/python3.6/site-packages/cv2/data/haarcascade_frontalface_default.xml'
-haar = Path(r"C:\Users\Jihyun\AppData\Local\Programs\Python\Python310\Lib\site-packages\cv2\data\haarcascade_frontalface_alt.xml")
+haar = r'C:\Users\Jihyun\AppData\Local\Programs\Python\Python310\Lib\site-packages\cv2\data\haarcascade_frontalface_alt.xml'
+# haar = Path(r"C:\Users\Jihyun\AppData\Local\Programs\Python\Python310\Lib\site-packages\cv2\data\haarcascade_frontalface_alt.xml")
 # haar = "/usr/local/lib/python3.10/dist-packages/cv2/data/haarcascade_frontalface_alt.xml"
 
 face_cascade = cv2.CascadeClassifier(haar)
@@ -87,7 +87,7 @@ FER_2013_EMO_DICT = {
 
 def main(image_path):
     # load configs and set random seed
-    configs = json.load(open("../configs/fer2013_config.json"))
+    configs = json.load(open("./configs/fer2013_config.json"))
     image_size = (configs["image_size"], configs["image_size"])
 
     # model = densenet121(in_channels=3, num_classes=7)
@@ -95,7 +95,7 @@ def main(image_path):
     model.cuda()
 
     # state = torch.load("./saved/checkpoints/resnet34_test_2023May01_14.34")
-    state = torch.load("../checkpoints/resnet34_test_2023May01_14.34")
+    state = torch.load("./checkpoint/resnet34_test_2023May01_14.34")
     model.load_state_dict(state["net"])
     model.eval()
 
@@ -147,6 +147,6 @@ if __name__ == "__main__":
     import sys
 
     # argv = sys.argv[1]
-    argv = "..\GIF_output\gif_to_jpgs_results\the-office_9\the-office_9_32.jpg"
+    argv = "./GIF_output/gif_to_jpgs_results/the-office_9/the-office_9_32.jpg"
     assert isinstance(argv, str) and os.path.exists(argv)
     main(argv)
