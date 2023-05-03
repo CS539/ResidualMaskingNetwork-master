@@ -1,7 +1,11 @@
 ## Step 1: Install the RMN model
-from rmn import RMN
+# from rmn import RMN
 
-m = RMN()
+# m = RMN()
+
+from legacy import demo_one_image
+
+m = demo_one_image()
 
 # m.video_demo()
 

@@ -1,10 +1,3 @@
-from models import segmentation
-import models
-import pandas as pd
-import torch.multiprocessing as mp
-import torch
-import numpy as np
-import imgaug
 import json
 import os
 import random
@@ -12,6 +5,10 @@ import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
+import imgaug
+import numpy as np
+import torch
+import torch.multiprocessing as mp
 
 seed = 1234
 random.seed(seed)
@@ -21,6 +18,9 @@ torch.cuda.manual_seed_all(seed)
 np.random.seed(seed)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
+
+import models
+from models import segmentation
 
 
 def main(config_path):
@@ -35,7 +35,6 @@ def main(config_path):
     # load configs and set random seed
     configs = json.load(open(config_path))
     configs["cwd"] = os.getcwd()
-    # configs['cwd'] = '~usr/local/lib/python3.10/dist-packages/torch/cuda/'
 
     # load model and data_loader
     model = get_model(configs)
@@ -44,9 +43,7 @@ def main(config_path):
 
     # init trainer and make a training
     # from trainers.fer2013_trainer import FER2013Trainer
-    # from trainers.tta_trainer import FER2013Trainer
-
-    from trainers._fer2013_trainer import FER2013Trainer
+    from trainers.tta_trainer import FER2013Trainer
 
     # from trainers.centerloss_trainer import FER2013Trainer
     trainer = FER2013Trainer(model, train_set, val_set, test_set, configs)
@@ -56,12 +53,6 @@ def main(config_path):
         mp.spawn(trainer.train, nprocs=ngpus, args=())
     else:
         trainer.train()
-
-    trained_model = trainer._model
-
-    torch.save(trained_model.state_dict(), './team_')
-    print('Complete training')
-    # torch.save(trained_model, './res10_300x300_ssd_iter_140000.caffemodel')
 
 
 def get_model(configs):
@@ -85,21 +76,12 @@ def get_dataset(configs):
     """
     from utils.datasets.fer2013dataset import fer2013
 
-    ## modified ##
-    
-    # data = pd.read_csv('./image_pixels.csv')
-
-    train = pd.read_csv('./image_pixels_train.csv')
-    val = pd.read_csv('./image_pixels_val.csv')
-    test = pd.read_csv('./image_pixels_test.csv')
-
     # todo: add transform
-    train_set = fer2013("train", configs, train)
-    val_set = fer2013("val", configs, val)
-    test_set = fer2013("test", configs, test, tta=True, tta_size=10)
+    train_set = fer2013("train", configs)
+    val_set = fer2013("val", configs)
+    test_set = fer2013("test", configs, tta=True, tta_size=10)
     return train_set, val_set, test_set
 
-    ################
 
 if __name__ == "__main__":
     main("./configs/fer2013_config.json")

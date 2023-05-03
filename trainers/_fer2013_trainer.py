@@ -381,6 +381,10 @@ class FER2013Trainer(Trainer):
 
         self._scheduler.step(100 - self._val_acc[-1])
 
+    epoch_dict = {'E': [], 'train loss': [], 'val loss': [],
+        'best loss': [], 'train acc': [], 'val acc': [], 'best acc': []}
+
+
     def _logging(self):
         consume_time = str(datetime.datetime.now() - self._start_time)
 
@@ -395,6 +399,8 @@ class FER2013Trainer(Trainer):
             self._plateau_count,
             consume_time[:-7],
         )
+        
+        # epoch_dict['E'].append(self._current_epoch_num)
 
         self._writer.add_scalar(
             "Accuracy/Train", self._train_acc[-1], self._current_epoch_num

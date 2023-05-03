@@ -66,14 +66,14 @@ def download_checkpoint(remote_url, local_path):
         print("ERROR, something went wrong")
 
 
-for remote_path, local_path in [
-    (checkpoint_url, local_checkpoint_path),
-    (prototxt_url, local_prototxt_path),
-    (ssd_checkpoint_url, local_ssd_checkpoint_path),
-]:
-    if not os.path.exists(local_path):
-        print(f"{local_path} does not exists!")
-        download_checkpoint(remote_url=remote_path, local_path=local_path)
+# for remote_path, local_path in [
+#     (checkpoint_url, local_checkpoint_path),
+#     (prototxt_url, local_prototxt_path),
+#     (ssd_checkpoint_url, local_ssd_checkpoint_path),
+# ]:
+#     if not os.path.exists(local_path):
+#         print(f"{local_path} does not exists!")
+#         download_checkpoint(remote_url=remote_path, local_path=local_path)
 
 
 def ensure_color(image):
